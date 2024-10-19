@@ -28,16 +28,22 @@ class LinearEquation {
 	calcMatrixNorm() {
 		this.matrixNorm = Math.max(
 			...this.coefficients
-				.map((row) => row.reduce((valueSum, value) => valueSum + value, 0))
-				.map((value, i) => value / this.xValues[i])
+				.map((row) =>
+					row.reduce((valueSum, value) => Math.abs(valueSum + value), 0)
+				)
+				.map((value, i) => {
+					if (this.xValues[i] !== 0) {
+						return value / this.xValues[i];
+					}
+					return 0;
+				})
 		);
 	}
 
 	calcDelta(i, previousApproximation) {
 		this.delta =
 			(this.matrixNorm / (1 - this.matrixNorm)) *
-				Math.abs(previousApproximation[i] - this.approximation[i]) >
-			this.epsilone;
+			Math.abs(previousApproximation[i] - this.approximation[i]);
 	}
 
 	calculateZeroApproximation() {
@@ -59,6 +65,9 @@ class LinearEquation {
 	}
 
 	calcApproximation() {
+		if (this.approximation === null)
+			return (this.approximation = 'Нет решения, матрица не сходится');
+
 		const previousApproximation = [...this.approximation];
 		const coefficientSum = this.calcCoefficientSum();
 
@@ -70,7 +79,7 @@ class LinearEquation {
 
 		this.approximationCount++;
 
-		if (!this.delta) return;
+		if (this.delta < this.epsilone) return;
 		this.calcApproximation();
 	}
 }
