@@ -1,13 +1,13 @@
 class LinearEquation {
 	constructor(A, B, epsilone) {
-		this.A = A;
-		this.B = B;
-		this.epsilone = epsilone;
-
 		this.coefficients = [];
 		this.coefficientIndexes = [];
 		this.xValues = [];
 		this.approximationCount = 1;
+
+		this.A = A;
+		this.B = B;
+		this.epsilone = epsilone;
 
 		this.findCoefficients();
 		this.calcMatrixNorm();
@@ -40,18 +40,18 @@ class LinearEquation {
 		);
 	}
 
-	calcDelta(i, previousApproximation) {
-		this.delta =
-			(this.matrixNorm / (1 - this.matrixNorm)) *
-			Math.abs(previousApproximation[i] - this.approximation[i]);
-	}
-
 	calculateZeroApproximation() {
 		if (this.matrixNorm < 1) {
 			this.approximation = this.xValues.map((value, i) => this.B[i] / value);
 		} else {
 			this.approximation = null;
 		}
+	}
+
+	calcDelta(i, previousApproximation) {
+		this.delta =
+			(this.matrixNorm / (1 - this.matrixNorm)) *
+			Math.abs(previousApproximation[i] - this.approximation[i]);
 	}
 
 	calcCoefficientSum() {
@@ -68,10 +68,10 @@ class LinearEquation {
 		if (this.approximation === null)
 			return (this.approximation = 'Нет решения, матрица не сходится');
 
-		const previousApproximation = [...this.approximation];
-		const coefficientSum = this.calcCoefficientSum();
-
 		for (let i = 0; i < this.approximation.length; i++) {
+			const previousApproximation = [...this.approximation];
+			const coefficientSum = this.calcCoefficientSum();
+
 			this.approximation[i] =
 				(1 / this.xValues[i]) * (this.B[i] - coefficientSum[i]);
 			this.calcDelta(i, previousApproximation);
