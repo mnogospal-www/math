@@ -39,27 +39,20 @@ class Equation {
 		this.approximation = this.gaps.map((gap) => (gap[0] + gap[1]) / 2);
 	}
 
+	checkCondition(index) {
+		if (this.delta[index] < this.epsilone) return;
+		this.calcApproximation();
+	}
+
 	calcApproximation() {
 		const previousApproximation = [...this.approximation];
 
 		for (let i = 0; i < this.approximation.length; i++) {
 			this.approximation[i] = this.xFunctions[i](this.approximation[i]);
-
 			this.calcDelta(i, previousApproximation);
 		}
-
 		this.approximationCount++;
-
-		if (this.delta[0] < this.epsilone) {
-			return;
-		} else {
-			this.calcApproximation();
-		}
-		if (this.delta[1] < this.epsilone) {
-			return;
-		} else {
-			this.calcApproximation();
-		}
+		this.delta.forEach((value, i) => this.checkCondition(i));
 	}
 }
 
