@@ -70,18 +70,21 @@ class Equation {
 
 const derivatives = [
 	(x) => {
-		return Math.cos(x) + 2 * x;
+		return 1 + 2 * Math.sin(x);
 	},
 	(x) => {
-		return -Math.sin(x) + 2;
+		return 2 * Math.cos(x);
 	},
 ];
 
 const xFunction = (x) => {
-	return Math.sin(x) + Math.pow(x, 2) - 1;
+	return x - 2 * Math.cos(x) + 1;
 };
 
-const gaps = [[0.1, 1]];
+const gaps = [
+	[0.1, 1],
+	[-4, -2],
+];
 
 const equation = new Equation(0.001, derivatives, xFunction, gaps);
 console.log(equation);
