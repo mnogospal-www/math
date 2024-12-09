@@ -1,95 +1,43 @@
-class Diff {
-  constructor(xTable, yTable, h) {
-    this.xTable = xTable;
-    this.yTable = yTable;
-    this.h = h;
-
-    this.viaTwoPoint();
-    this.viaFourPoint();
-  }
-
-  viaTwoPoint() {
-    this.xViaTwoPointResult = [];
-
-    for (let i = 0; i < this.yTable.length; i++) {
-      this.xViaTwoPointResult.push(
-        (this.yTable[i + 1] - this.yTable[i]) / this.h
-      );
-    }
-
-    this.xViaTwoPointResult.pop();
-  }
-
-  viaFourPoint() {
-    this.xViaFourPointResult = [];
-
-    for (let i = 0; i < yTable.length; i++) {
-      const x = null;
-
-      for (let j = 0; j < 4; j++) {
-        switch (j) {
-          case '0': {
-            x =
-              (1 / 6) *
-              this.h *
-              (-11 * yTable[i] +
-                18 * yTable[i + 1] -
-                9 * yTable[i + 2] +
-                2 * yTable[i + 3]);
-          }
-
-          case '1': {
-            x =
-              (1 / 6) *
-              this.h *
-              (-2 * yTable[i] -
-                3 * yTable[i + 1] +
-                6 * yTable[i + 2] -
-                yTable[i + 3]);
-          }
-
-          case '2': {
-            x =
-              (1 / 6) *
-              this.h *
-              (yTable[i] -
-                6 * yTable[i + 1] +
-                3 * yTable[i + 2] +
-                2 * yTable[i + 3]);
-          }
-
-          case '3': {
-          }
-        }
-      }
-
-      this.xViaFourPointResult.push(x);
-    }
-  }
+function derivativeViaTwoPoints(f, point, h) {
+  return (f(point + h) - f(point)) / h;
 }
 
-const xTable = createXTableViaH(1, 21, 0.01);
-const yTable = createYTableViaCallback(xTable, Math.cosh);
-
-const diff = new Diff(xTable, yTable, 0.01);
-console.log(diff);
-
-function createXTableViaH(firstValue, valuesCount, h) {
-  const xTable = [firstValue];
-  let coefficent = firstValue;
-
-  for (let i = 0; i < valuesCount; i++) {
-    coefficent += h;
-    xTable.push(parseFloat(coefficent.toFixed(2)));
-  }
-
-  return xTable;
+function derivativeViaFourPoints(f, point, h) {
+  return (
+    (1 / (6 * h)) *
+    (-11 * f(point) + 18 * f(point + h) - 9 * f(point + 2 * h) + 2 * f(point + 3 * h))
+  );
 }
 
-function createYTableViaCallback(xTable, callback) {
-  const yTable = [];
+// function secondDerivative(f, point, h) {
+//   return (
+//     (1 / Math.pow(h, 2)) *
+//     (2 * f(point) - 5 * f(point + 2 * h) + 4 * f(point + 2 * h) - f(point + h * 3))
+//   );
+// }
 
-  xTable.forEach((xValue) => yTable.push(callback(xValue)));
-
-  return yTable;
+function delta(analitical, numerical) {
+  return (analitical - numerical).toFixed(3);
 }
+
+const point = 1.2;
+const f = Math.cosh;
+const h = 0.01;
+const analitical = 1.509;
+
+console.log('analitical', analitical);
+
+const viaTwoPoints = derivativeViaTwoPoints(f, point, h);
+const viaFourPoints = derivativeViaFourPoints(f, point, h);
+const second = secondDerivative(f, point, h);
+
+console.log(
+  `via two points | delta: ${delta(analitical, viaTwoPoints)} | value: ${viaTwoPoints} `
+);
+
+console.log(
+  `via four points | delta: ${delta(
+    analitical,
+    viaFourPoints
+  )} | value: ${viaFourPoints} | second derivative: ${second}`
+);
